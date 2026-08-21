@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Q-GEAR ENGINE</title>
+  <title>Q-GEAR ENGINE | Three.js Renderer</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"></script>
 </head>
 <body>
   <div id="container">
-    <canvas id="engine-canvas"></canvas>
+    <div id="viewport"></div>
     <div id="ui-panel">
       <div id="pressure-gauge" class="gauge">
         <div id="pressure-bar" class="gauge-bar"></div>
@@ -18,13 +20,16 @@
         <button id="btn-stance-1">STANCE 1</button>
         <button id="btn-stance-2">STANCE 2</button>
         <button id="btn-burst">BURST</button>
+        <button id="btn-vortex-pulse">VORTEX PULSE</button>
       </div>
       <div id="stats">
         <p>FPS: <span id="fps">0</span></p>
         <p>Particles: <span id="particle-count">0</span></p>
+        <p>Pressure: <span id="pressure-value">0</span>%</p>
       </div>
     </div>
   </div>
+  <script src="three-scene.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

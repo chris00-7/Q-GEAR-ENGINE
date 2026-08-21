@@ -20,10 +20,17 @@ body {
   position: relative;
 }
 
-#engine-canvas {
+#viewport {
   flex: 1;
   background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
   display: block;
+  position: relative;
+}
+
+#viewport canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 #ui-panel {
@@ -35,6 +42,7 @@ body {
   flex-direction: column;
   gap: 20px;
   box-shadow: inset 0 0 20px rgba(139, 0, 255, 0.2);
+  overflow-y: auto;
 }
 
 .gauge {
@@ -52,15 +60,7 @@ body {
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(139, 0, 255, 0.5);
-}
-
-.gauge-bar::after {
-  content: '';
-  display: block;
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #8B00FF, #00FFFF);
-  box-shadow: 0 0 10px rgba(139, 0, 255, 0.8), inset 0 0 10px rgba(0, 255, 255, 0.5);
+  position: relative;
   transition: width 0.05s linear;
 }
 
@@ -93,6 +93,7 @@ button:hover {
 
 button:active {
   transform: translateY(0);
+  background: rgba(139, 0, 255, 0.8);
 }
 
 #stats {
@@ -102,20 +103,43 @@ button:active {
 }
 
 #stats p {
-  margin: 5px 0;
+  margin: 8px 0;
   color: #00ff00;
   text-shadow: 0 0 5px #00ff00;
 }
 
+/* Scrollbar styling */
+#ui-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+#ui-panel::-webkit-scrollbar-track {
+  background: rgba(139, 0, 255, 0.1);
+}
+
+#ui-panel::-webkit-scrollbar-thumb {
+  background: rgba(139, 0, 255, 0.5);
+  border-radius: 4px;
+}
+
+#ui-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 0, 255, 0.7);
+}
+
 @media (max-width: 768px) {
-  #ui-panel {
-    width: 100%;
-    flex-direction: row;
-    border-left: none;
-    border-top: 2px solid #8B00FF;
+  #container {
+    flex-direction: column;
   }
   
-  #engine-canvas {
-    display: none;
+  #viewport {
+    flex: 1;
+    min-height: 60vh;
+  }
+  
+  #ui-panel {
+    width: 100%;
+    border-left: none;
+    border-top: 2px solid #8B00FF;
+    max-height: 40vh;
   }
 }

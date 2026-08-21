@@ -1,0 +1,121 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0a0e27;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: relative;
+}
+
+#engine-canvas {
+  flex: 1;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  display: block;
+}
+
+#ui-panel {
+  width: 250px;
+  background: rgba(10, 14, 39, 0.95);
+  border-left: 2px solid #8B00FF;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: inset 0 0 20px rgba(139, 0, 255, 0.2);
+}
+
+.gauge {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.gauge-bar {
+  width: 100%;
+  height: 30px;
+  background: rgba(139, 0, 255, 0.2);
+  border: 2px solid #8B00FF;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(139, 0, 255, 0.5);
+}
+
+.gauge-bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #8B00FF, #00FFFF);
+  box-shadow: 0 0 10px rgba(139, 0, 255, 0.8), inset 0 0 10px rgba(0, 255, 255, 0.5);
+  transition: width 0.05s linear;
+}
+
+#controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+button {
+  background: rgba(139, 0, 255, 0.3);
+  color: #00ff00;
+  border: 2px solid #8B00FF;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  font-size: 12px;
+  box-shadow: 0 0 5px rgba(139, 0, 255, 0.3);
+}
+
+button:hover {
+  background: rgba(139, 0, 255, 0.6);
+  box-shadow: 0 0 15px rgba(139, 0, 255, 0.8);
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+#stats {
+  border-top: 1px solid rgba(139, 0, 255, 0.3);
+  padding-top: 15px;
+  font-size: 12px;
+}
+
+#stats p {
+  margin: 5px 0;
+  color: #00ff00;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+@media (max-width: 768px) {
+  #ui-panel {
+    width: 100%;
+    flex-direction: row;
+    border-left: none;
+    border-top: 2px solid #8B00FF;
+  }
+  
+  #engine-canvas {
+    display: none;
+  }
+}

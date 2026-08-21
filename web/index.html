@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q-GEAR ENGINE</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="container">
+    <canvas id="engine-canvas"></canvas>
+    <div id="ui-panel">
+      <div id="pressure-gauge" class="gauge">
+        <div id="pressure-bar" class="gauge-bar"></div>
+        <span>PRESSURE</span>
+      </div>
+      <div id="controls">
+        <button id="btn-stance-1">STANCE 1</button>
+        <button id="btn-stance-2">STANCE 2</button>
+        <button id="btn-burst">BURST</button>
+      </div>
+      <div id="stats">
+        <p>FPS: <span id="fps">0</span></p>
+        <p>Particles: <span id="particle-count">0</span></p>
+      </div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

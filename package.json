@@ -1,0 +1,25 @@
+{
+  "name": "q-gear-engine",
+  "version": "1.0.0",
+  "description": "Q-Gear Chamber Engine - A rotating quantum chamber with vortex effects, pressure-based energy, and particle systems",
+  "main": "engine/system.js",
+  "scripts": {
+    "start": "node -e \"const QGear = require('./engine/system'); const engine = new QGear(); engine.start(); setInterval(() => engine.update(), 16);\"",
+    "dev": "http-server -p 8080 -c-1",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "quantum",
+    "chamber",
+    "vortex",
+    "particles",
+    "energy",
+    "engine"
+  ],
+  "author": "chris00-7",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

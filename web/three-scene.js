@@ -363,8 +363,9 @@ class ThreeJSScene {
     
     // Animate particles
     if (this.particlePoints) {
-      const pressureLevel = engineState && engineState.pressure ? engineState.pressure.level : 0;
-      const targetParticleCount = Math.floor(800 + (pressureLevel * 1200));
+      const rawPressure = engineState && engineState.pressure ? engineState.pressure.level : 0;
+      const pressureLevel = rawPressure > 1 ? (rawPressure / 100) : rawPressure;
+      const targetParticleCount = Math.floor(800 + (Math.max(0, Math.min(1, pressureLevel)) * 1200));
       this.activeParticleCount = Math.min(this.maxParticleCount, Math.max(200, targetParticleCount));
       this.particlePoints.geometry.setDrawRange(0, this.activeParticleCount);
       this.particlePoints.rotation.x += 0.0001;

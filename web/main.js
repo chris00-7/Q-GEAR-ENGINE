@@ -73,7 +73,7 @@ class QGearRenderer {
   updateEngine(deltaTime) {
     // Simulate pressure accumulation
     this.engineState.pressure.current = Math.min(
-      this.engineState.pressure.current + 0.3,
+      this.engineState.pressure.current + (18 * deltaTime),
       this.engineState.pressure.max
     );
     this.engineState.pressure.level = this.engineState.pressure.current / this.engineState.pressure.max;
@@ -93,7 +93,7 @@ class QGearRenderer {
     
     // Update stats
     document.getElementById('fps').textContent = this.fps;
-    document.getElementById('particle-count').textContent = this.engineState.particles.length;
+    document.getElementById('particle-count').textContent = this.threeScene.getParticleCount();
     document.getElementById('pressure-value').textContent = pressurePercent;
     
     // Color coding for danger levels

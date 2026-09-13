@@ -35,10 +35,11 @@ class ThreeJSScene {
       antialias: true,
       alpha: true,
     });
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setClearColor(0x0a0e27, 1);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFShadowShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.container.appendChild(this.renderer.domElement);
     
     window.addEventListener('resize', () => this.onWindowResize());
@@ -120,7 +121,6 @@ class ThreeJSScene {
     const spiralMaterial = new THREE.LineBasicMaterial({
       color: 0x8B00FF,
       linewidth: 3,
-      emissive: 0x8B00FF,
     });
     const spiralLine = new THREE.Line(spiralGeometry, spiralMaterial);
     spiralLine.castShadow = true;
@@ -147,7 +147,6 @@ class ThreeJSScene {
       const ringMaterial = new THREE.LineBasicMaterial({
         color: ring === 1 ? 0x00FFFF : 0xAA66FF,
         linewidth: 2,
-        emissive: ring === 1 ? 0x00FFFF : 0xAA66FF,
       });
       const ringLine = new THREE.Line(ringGeometry, ringMaterial);
       ringLine.castShadow = true;
@@ -231,8 +230,8 @@ class ThreeJSScene {
   createOperator() {
     const group = new THREE.Group();
     
-    // Operator body (stylized humanoid)
-    const bodyGeometry = new THREE.CapsuleGeometry(20, 60, 8, 16);
+    // Operator body (stylized humanoid, compatible with Three r128)
+    const bodyGeometry = new THREE.CylinderGeometry(18, 22, 60, 16);
     const bodyMaterial = new THREE.MeshPhongMaterial({
       color: 0x00FF00,
       emissive: 0x00AA00,
@@ -309,6 +308,8 @@ class ThreeJSScene {
       vertexColors: true,
       transparent: true,
       sizeAttenuation: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
     });
     
     this.particlePoints = new THREE.Points(particleGeometry, particleMaterial);
@@ -394,6 +395,15 @@ class ThreeJSScene {
         this.vortexMesh.scale.copy(originalScale);
       }, 200);
     }
+  }
+
+  /**
+   * Get active particle count
+   */
+  getParticleCount() {
+    if (!this.particlePoints || !this.particlePoints.geometry) return 0;
+    const position = this.particlePoints.geometry.getAttribute('position');
+    return position ? position.count : 0;
   }
 }
 

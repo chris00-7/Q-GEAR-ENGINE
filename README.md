@@ -1,49 +1,33 @@
-# Q-GEAR-ENGINE# Q-GEAR ENGINE
+# Q-GEAR-ENGINE
 
-This repository contains the starter architecture for the Q-Gear Chamber Engine.
+Q-GEAR-ENGINE is an interactive 3D quantum chamber visualization built with Three.js.
 
-The goal is to build:
-- A rotating quantum chamber
-- A purple vortex engine core
-- A pressure-based energy system
-- Particle streams
-- Operator aura and stance logic
-- Electric crackle hand effects
-- Gear-shadow silhouette
-- Neon lighting and chamber ambience
+## Features
 
-## Project Structure (Copilot will generate these files)
+- Rotating quantum chamber with pressure-linked speed
+- Pulsing vortex core and dynamic lighting
+- Operator model with reactive aura
+- Particle field with neon blending
+- Interactive controls:
+  - **STANCE 1**
+  - **STANCE 2**
+  - **BURST**
+  - **VORTEX PULSE**
+- Live metrics for FPS, pressure %, and particle count
 
-Q-GEAR-ENGINE/
-│
-├── engine/
-│   ├── vortex.js
-│   ├── pressure.js
-│   ├── particles.js
-│   ├── chamber.js
-│   ├── operator.js
-│   ├── aura.js
-│   ├── sigil.js
-│   ├── stance.js
-│   ├── effects.js
-│   └── system.js
-│
-├── assets/
-│   ├── shaders/
-│   ├── audio/
-│   └── textures/
-│
-├── web/
-│   ├── index.html
-│   ├── style.css
-│   └── main.js
-│
-└── package.json
+## Setup
 
----
+```bash
+npm install
+npm run dev
+```
 
-## ENGINE MODULE STARTERS
+Open:
 
-Copilot: Use these TODOs to generate full implementations.
+`http://localhost:8080/web/index.html`
 
-### engine/vortex.js
+## Project Layout
+
+- `/web` — browser app (scene, UI, controls)
+- `/engine` — modular simulation systems (pressure, vortex, chamber, particles, operator, effects)
+- `IMPLEMENTATION_STATUS.md` — architecture and subsystem details

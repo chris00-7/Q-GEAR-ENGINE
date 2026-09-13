@@ -35,10 +35,12 @@ class ThreeJSScene {
       antialias: true,
       alpha: true,
     });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    const { width, height } = this.getViewportSize();
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    this.renderer.setSize(width, height, false);
     this.renderer.setClearColor(0x0a0e27, 1);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFShadowShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.container.appendChild(this.renderer.domElement);
     
     window.addEventListener('resize', () => this.onWindowResize());
@@ -48,9 +50,10 @@ class ThreeJSScene {
    * Initialize camera
    */
   initCamera() {
+    const { width, height } = this.getViewportSize();
     this.camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      width / height,
       0.1,
       10000
     );
@@ -119,8 +122,7 @@ class ThreeJSScene {
     spiralGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(spiralPoints), 3));
     const spiralMaterial = new THREE.LineBasicMaterial({
       color: 0x8B00FF,
-      linewidth: 3,
-      emissive: 0x8B00FF,
+      linewidth: 3
     });
     const spiralLine = new THREE.Line(spiralGeometry, spiralMaterial);
     spiralLine.castShadow = true;
@@ -146,8 +148,7 @@ class ThreeJSScene {
       ringGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(ringPoints), 3));
       const ringMaterial = new THREE.LineBasicMaterial({
         color: ring === 1 ? 0x00FFFF : 0xAA66FF,
-        linewidth: 2,
-        emissive: ring === 1 ? 0x00FFFF : 0xAA66FF,
+        linewidth: 2
       });
       const ringLine = new THREE.Line(ringGeometry, ringMaterial);
       ringLine.castShadow = true;
@@ -312,6 +313,7 @@ class ThreeJSScene {
     });
     
     this.particlePoints = new THREE.Points(particleGeometry, particleMaterial);
+    this.particleGeometry = particleGeometry;
     this.scene.add(this.particlePoints);
   }
   
@@ -374,12 +376,24 @@ class ThreeJSScene {
    * Handle window resize
    */
   onWindowResize() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const { width, height } = this.getViewportSize();
     
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(width, height, false);
+  }
+
+  getViewportSize() {
+    const width = this.container.clientWidth || window.innerWidth;
+    const height = this.container.clientHeight || window.innerHeight;
+    return { width, height };
+  }
+
+  getParticleCount() {
+    if (!this.particleGeometry) {
+      return 0;
+    }
+    return this.particleGeometry.getAttribute('position').count;
   }
   
   /**

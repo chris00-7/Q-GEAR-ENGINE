@@ -47,18 +47,17 @@ class QGearRenderer {
   setupControls() {
     document.getElementById('btn-stance-1').addEventListener('click', () => {
       console.log('Stance 1 activated');
-      this.engineState.pressure.level = Math.min(this.engineState.pressure.level + 0.25, 1);
+      this.setPressureLevel(this.engineState.pressure.level + 0.25);
     });
     
     document.getElementById('btn-stance-2').addEventListener('click', () => {
       console.log('Stance 2 activated');
-      this.engineState.pressure.level = Math.min(this.engineState.pressure.level + 0.5, 1);
+      this.setPressureLevel(this.engineState.pressure.level + 0.5);
     });
     
     document.getElementById('btn-burst').addEventListener('click', () => {
       console.log('Burst activated');
-      this.engineState.pressure.level = 0;
-      this.engineState.pressure.current = 0;
+      this.setPressureLevel(0);
     });
     
     document.getElementById('btn-vortex-pulse').addEventListener('click', () => {
@@ -73,7 +72,7 @@ class QGearRenderer {
   updateEngine(deltaTime) {
     // Simulate pressure accumulation
     this.engineState.pressure.current = Math.min(
-      this.engineState.pressure.current + 0.3,
+      this.engineState.pressure.current + (18 * deltaTime),
       this.engineState.pressure.max
     );
     this.engineState.pressure.level = this.engineState.pressure.current / this.engineState.pressure.max;
@@ -93,7 +92,7 @@ class QGearRenderer {
     
     // Update stats
     document.getElementById('fps').textContent = this.fps;
-    document.getElementById('particle-count').textContent = this.engineState.particles.length;
+    document.getElementById('particle-count').textContent = this.threeScene.getParticleCount();
     document.getElementById('pressure-value').textContent = pressurePercent;
     
     // Color coding for danger levels
@@ -147,6 +146,12 @@ class QGearRenderer {
       requestAnimationFrame(animate);
     };
     animate();
+  }
+
+  setPressureLevel(level) {
+    const clampedLevel = Math.min(Math.max(level, 0), 1);
+    this.engineState.pressure.level = clampedLevel;
+    this.engineState.pressure.current = clampedLevel * this.engineState.pressure.max;
   }
 }
 

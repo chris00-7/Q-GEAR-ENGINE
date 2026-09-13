@@ -30,6 +30,7 @@ class QGearRenderer {
       particles: [],
       effects: [],
     };
+    this.engineState.particles.length = this.threeScene.getParticleCount();
     
     // Performance tracking
     this.fps = 0;
@@ -92,7 +93,7 @@ class QGearRenderer {
     
     // Update stats
     document.getElementById('fps').textContent = this.fps;
-    document.getElementById('particle-count').textContent = this.threeScene.getParticleCount();
+    document.getElementById('particle-count').textContent = this.engineState.particles.length;
     document.getElementById('pressure-value').textContent = pressurePercent;
     
     // Color coding for danger levels
@@ -109,6 +110,7 @@ class QGearRenderer {
    * Main update loop
    */
   update(deltaTime) {
+    this.engineState.particles.length = this.threeScene.getParticleCount();
     this.updateEngine(deltaTime);
     this.threeScene.update(this.engineState);
   }

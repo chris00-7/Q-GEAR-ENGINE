@@ -8,6 +8,9 @@
 class ThreeJSScene {
   constructor(containerElement) {
     this.container = containerElement;
+    if (!this.container) {
+      throw new Error('ThreeJSScene requires a valid container element.');
+    }
     this.scene = new THREE.Scene();
     this.camera = null;
     this.renderer = null;

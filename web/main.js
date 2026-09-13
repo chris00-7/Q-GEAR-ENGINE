@@ -98,13 +98,13 @@ class QGearRenderer {
 
     // Update stats
     const fpsElement = document.getElementById('fps');
-    if (fpsElement) fpsElement.textContent = this.fps;
+    if (fpsElement) fpsElement.textContent = String(this.fps);
 
     const particleCountElement = document.getElementById('particle-count');
-    if (particleCountElement) particleCountElement.textContent = this.engineState.particles.length;
+    if (particleCountElement) particleCountElement.textContent = String(this.engineState.particles.length);
 
     const pressureValueElement = document.getElementById('pressure-value');
-    if (pressureValueElement) pressureValueElement.textContent = pressurePercent;
+    if (pressureValueElement) pressureValueElement.textContent = String(pressurePercent);
     
     // Color coding for danger levels
     if (pressureBar) {

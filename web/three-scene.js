@@ -384,8 +384,8 @@ class ThreeJSScene {
   }
 
   getViewportSize() {
-    const width = this.container.clientWidth || window.innerWidth;
-    const height = this.container.clientHeight || window.innerHeight;
+    const width = this.container.clientWidth > 0 ? this.container.clientWidth : window.innerWidth;
+    const height = this.container.clientHeight > 0 ? this.container.clientHeight : window.innerHeight;
     return { width, height };
   }
 

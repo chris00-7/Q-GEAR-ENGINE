@@ -93,7 +93,10 @@ class QGearRenderer {
     
     // Update stats
     document.getElementById('fps').textContent = this.fps;
-    document.getElementById('particle-count').textContent = this.threeScene.getParticleCount();
+    const particleCount = this.threeScene && typeof this.threeScene.getParticleCount === 'function'
+      ? this.threeScene.getParticleCount()
+      : this.engineState.particles.length;
+    document.getElementById('particle-count').textContent = particleCount;
     document.getElementById('pressure-value').textContent = pressurePercent;
     
     // Color coding for danger levels

@@ -310,6 +310,7 @@ class ThreeJSScene {
       sizeAttenuation: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
+      depthTest: false,
     });
     
     this.particlePoints = new THREE.Points(particleGeometry, particleMaterial);

@@ -28,6 +28,7 @@ Open:
 
 ## Project Layout
 
-- `/web` — browser app (scene, UI, controls)
-- `/engine` — modular simulation systems (pressure, vortex, chamber, particles, operator, effects)
+- `/web` — browser app entrypoint, Three.js scene, styling, and controls
+- `/engine` — simulation modules used by the Node engine runtime
+- `package.json` — scripts and dependency configuration
 - `IMPLEMENTATION_STATUS.md` — architecture and subsystem details

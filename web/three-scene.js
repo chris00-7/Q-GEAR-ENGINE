@@ -17,6 +17,8 @@ class ThreeJSScene {
     this.operatorMesh = null;
     this.particleGeometry = null;
     this.particlePoints = null;
+    this.activeParticleCount = 0;
+    this.maxParticleCount = 0;
     
     this.lights = [];
     this.updateTime = 0;
@@ -314,6 +316,8 @@ class ThreeJSScene {
     
     this.particlePoints = new THREE.Points(particleGeometry, particleMaterial);
     this.scene.add(this.particlePoints);
+    this.maxParticleCount = particleCount;
+    this.activeParticleCount = particleCount;
   }
   
   /**
@@ -359,6 +363,10 @@ class ThreeJSScene {
     
     // Animate particles
     if (this.particlePoints) {
+      const pressureLevel = engineState && engineState.pressure ? engineState.pressure.level : 0;
+      const targetParticleCount = Math.floor(800 + (pressureLevel * 1200));
+      this.activeParticleCount = Math.min(this.maxParticleCount, Math.max(200, targetParticleCount));
+      this.particlePoints.geometry.setDrawRange(0, this.activeParticleCount);
       this.particlePoints.rotation.x += 0.0001;
       this.particlePoints.rotation.y += 0.0002;
     }
@@ -401,9 +409,7 @@ class ThreeJSScene {
    * Get active particle count
    */
   getParticleCount() {
-    if (!this.particlePoints || !this.particlePoints.geometry) return 0;
-    const position = this.particlePoints.geometry.getAttribute('position');
-    return position ? position.count : 0;
+    return this.activeParticleCount;
   }
 }
 

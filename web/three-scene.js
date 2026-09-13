@@ -8,6 +8,9 @@
 class ThreeJSScene {
   constructor(containerElement) {
     this.container = containerElement;
+    if (!this.container) {
+      throw new Error('ThreeJSScene requires a valid container element.');
+    }
     this.scene = new THREE.Scene();
     this.camera = null;
     this.renderer = null;
@@ -233,7 +236,9 @@ class ThreeJSScene {
     const group = new THREE.Group();
     
     // Operator body (stylized humanoid)
-    const bodyGeometry = new THREE.CapsuleGeometry(20, 60, 8, 16);
+    const bodyGeometry = typeof THREE.CapsuleGeometry === 'function'
+      ? new THREE.CapsuleGeometry(20, 60, 8, 16)
+      : new THREE.CylinderGeometry(20, 20, 100, 16);
     const bodyMaterial = new THREE.MeshPhongMaterial({
       color: 0x00FF00,
       emissive: 0x00AA00,

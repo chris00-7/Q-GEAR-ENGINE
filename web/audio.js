@@ -14,6 +14,7 @@ class AudioSystem {
     this.ambientOscillator = null;
     this.ambientGain = null;
     this.pressureLevel = 0;
+    this.ambientStartToken = 0;
     
     this.initAudioContext();
   }
@@ -32,11 +33,18 @@ class AudioSystem {
   /**
    * Start ambient sound based on pressure
    */
-  startAmbientSound(pressureLevel = 0) {
+  async startAmbientSound(pressureLevel = 0) {
     if (!this.audioContext) return;
     
     try {
       const ctx = this.audioContext;
+      const startToken = ++this.ambientStartToken;
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+        if (startToken !== this.ambientStartToken) return;
+      }
+      this.stopAmbientSound();
+      if (startToken !== this.ambientStartToken) return;
       
       // Create oscillator for ambient tone
       this.ambientOscillator = ctx.createOscillator();
@@ -138,6 +146,7 @@ class AudioSystem {
    * Stop ambient sound
    */
   stopAmbientSound() {
+    this.ambientStartToken++;
     if (this.ambientOscillator && this.audioContext) {
       try {
         this.ambientOscillator.stop();

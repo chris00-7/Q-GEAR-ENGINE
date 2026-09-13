@@ -38,12 +38,12 @@ class ThreeJSScene {
       antialias: true,
       alpha: true,
     });
-    const width = this.container?.clientWidth || window.innerWidth;
-    const height = this.container?.clientHeight || window.innerHeight;
-    this.renderer.setSize(width, height);
+    const { width, height } = this.getViewportSize();
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    this.renderer.setSize(width, height, false);
     this.renderer.setClearColor(0x0a0e27, 1);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.container.appendChild(this.renderer.domElement);
     
     window.addEventListener('resize', () => this.onWindowResize());
@@ -53,9 +53,10 @@ class ThreeJSScene {
    * Initialize camera
    */
   initCamera() {
+    const { width, height } = this.getViewportSize();
     this.camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      width / height,
       0.1,
       10000
     );
@@ -317,6 +318,7 @@ class ThreeJSScene {
     });
     
     this.particlePoints = new THREE.Points(particleGeometry, particleMaterial);
+    this.particleGeometry = particleGeometry;
     this.scene.add(this.particlePoints);
   }
   
@@ -379,12 +381,28 @@ class ThreeJSScene {
    * Handle window resize
    */
   onWindowResize() {
-    const width = this.container?.clientWidth || window.innerWidth;
-    const height = this.container?.clientHeight || window.innerHeight;
+    const { width, height } = this.getViewportSize();
     
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(width, height, false);
+  }
+
+  getViewportSize() {
+    const rect = this.container.getBoundingClientRect();
+    const width = rect.width > 0 ? rect.width : window.innerWidth;
+    const height = rect.height > 0 ? rect.height : window.innerHeight;
+    return {
+      width: Math.max(width, 1),
+      height: Math.max(height, 1),
+    };
+  }
+
+  getParticleCount() {
+    if (!this.particleGeometry) {
+      return 0;
+    }
+    return this.particleGeometry.getAttribute('position').count;
   }
   
   /**

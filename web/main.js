@@ -33,6 +33,7 @@ class QGearRenderer {
       particles: [],
       effects: [],
     };
+    this.engineState.particles.length = this.threeScene.getParticleCount();
     
     // Performance tracking
     this.fps = 0;
@@ -50,18 +51,17 @@ class QGearRenderer {
   setupControls() {
     document.getElementById('btn-stance-1')?.addEventListener('click', () => {
       console.log('Stance 1 activated');
-      this.engineState.pressure.level = Math.min(this.engineState.pressure.level + 0.25, 1);
+      this.setPressureLevel(this.engineState.pressure.level + 0.25);
     });
     
     document.getElementById('btn-stance-2')?.addEventListener('click', () => {
       console.log('Stance 2 activated');
-      this.engineState.pressure.level = Math.min(this.engineState.pressure.level + 0.5, 1);
+      this.setPressureLevel(this.engineState.pressure.level + 0.5);
     });
     
     document.getElementById('btn-burst')?.addEventListener('click', () => {
       console.log('Burst activated');
-      this.engineState.pressure.level = 0;
-      this.engineState.pressure.current = 0;
+      this.setPressureLevel(0);
     });
     
     document.getElementById('btn-vortex-pulse')?.addEventListener('click', () => {
@@ -122,6 +122,7 @@ class QGearRenderer {
    * Main update loop
    */
   update(deltaTime) {
+    this.engineState.particles.length = this.threeScene.getParticleCount();
     this.updateEngine(deltaTime);
     this.threeScene.update(this.engineState);
   }
@@ -159,6 +160,12 @@ class QGearRenderer {
       requestAnimationFrame(animate);
     };
     animate();
+  }
+
+  setPressureLevel(level) {
+    const clampedLevel = Math.min(Math.max(level, 0), 1);
+    this.engineState.pressure.level = clampedLevel;
+    this.engineState.pressure.current = clampedLevel * this.engineState.pressure.max;
   }
 }
 

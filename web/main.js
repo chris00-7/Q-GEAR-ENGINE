@@ -93,21 +93,24 @@ class QGearRenderer {
     
     // Update pressure gauge
     const pressureBar = document.getElementById('pressure-bar');
-    if (!pressureBar) return;
-    pressureBar.style.width = pressurePercent + '%';
-    
+    if (pressureBar) {
+      pressureBar.style.width = pressurePercent + '%';
+    }
+
     // Update stats
     document.getElementById('fps').textContent = this.fps;
     document.getElementById('particle-count').textContent = this.engineState.particles.length;
     document.getElementById('pressure-value').textContent = pressurePercent;
     
     // Color coding for danger levels
-    if (this.engineState.pressure.isCritical) {
-      pressureBar.style.background = 'linear-gradient(90deg, #FF0000, #FF3300)';
-    } else if (this.engineState.pressure.isDangerous) {
-      pressureBar.style.background = 'linear-gradient(90deg, #FF6600, #FF3300)';
-    } else {
-      pressureBar.style.background = 'linear-gradient(90deg, #8B00FF, #00FFFF)';
+    if (pressureBar) {
+      if (this.engineState.pressure.isCritical) {
+        pressureBar.style.background = 'linear-gradient(90deg, #FF0000, #FF3300)';
+      } else if (this.engineState.pressure.isDangerous) {
+        pressureBar.style.background = 'linear-gradient(90deg, #FF6600, #FF3300)';
+      } else {
+        pressureBar.style.background = 'linear-gradient(90deg, #8B00FF, #00FFFF)';
+      }
     }
   }
   

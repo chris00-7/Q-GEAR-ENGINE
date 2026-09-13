@@ -32,13 +32,13 @@ class AudioSystem {
   /**
    * Start ambient sound based on pressure
    */
-  startAmbientSound(pressureLevel = 0) {
+  async startAmbientSound(pressureLevel = 0) {
     if (!this.audioContext) return;
     
     try {
       const ctx = this.audioContext;
       if (ctx.state === 'suspended') {
-        ctx.resume();
+        await ctx.resume();
       }
       this.stopAmbientSound();
       

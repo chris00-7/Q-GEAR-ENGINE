@@ -63,6 +63,7 @@ class AdvancedEffects {
       if (elapsed > duration * 1000) {
         clearInterval(pulse);
         canvas.style.filter = '';
+        canvas.style.transform = '';
         return;
       }
       

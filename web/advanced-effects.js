@@ -13,6 +13,25 @@ class AdvancedEffects {
     this.effectsEnabled = true;
     this.bloomStrength = 1.0;
     this.glitchIntensity = 0;
+    this.glitchOffset = { x: 0, y: 0 };
+    this.pulseBrightness = 1;
+  }
+
+  applyCanvasVisualState() {
+    const canvas = this.renderer?.domElement;
+    if (!canvas) return;
+
+    canvas.style.transform = `translate(${this.glitchOffset.x}px, ${this.glitchOffset.y}px)`;
+
+    const filterParts = [];
+    if (this.glitchIntensity > 0) {
+      filterParts.push(`contrast(${1 + this.glitchIntensity * 0.15})`);
+      filterParts.push(`saturate(${1 + this.glitchIntensity * 0.1})`);
+    }
+    if (this.pulseBrightness !== 1) {
+      filterParts.push(`brightness(${this.pulseBrightness})`);
+    }
+    canvas.style.filter = filterParts.join(' ');
   }
   
   /**
@@ -29,18 +48,14 @@ class AdvancedEffects {
    */
   applyGlitchEffect(pressureLevel) {
     this.glitchIntensity = pressureLevel > 0.85 ? 1.0 : 0;
-    const canvas = this.renderer?.domElement;
-    if (!canvas) return;
-
     if (this.glitchIntensity > 0) {
-      const xOffset = (Math.random() - 0.5) * (this.glitchIntensity * 6);
-      const yOffset = (Math.random() - 0.5) * (this.glitchIntensity * 3);
-      canvas.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-      canvas.style.filter = `contrast(${1 + this.glitchIntensity * 0.15}) saturate(${1 + this.glitchIntensity * 0.1})`;
+      this.glitchOffset.x = (Math.random() - 0.5) * (this.glitchIntensity * 6);
+      this.glitchOffset.y = (Math.random() - 0.5) * (this.glitchIntensity * 3);
     } else {
-      canvas.style.transform = '';
-      canvas.style.filter = '';
+      this.glitchOffset.x = 0;
+      this.glitchOffset.y = 0;
     }
+    this.applyCanvasVisualState();
   }
   
   /**
@@ -55,20 +70,20 @@ class AdvancedEffects {
    * Pulse screen brightness
    */
   pulseScreen(duration = 0.2) {
-    const canvas = this.renderer.domElement;
     const startTime = Date.now();
     
     const pulse = setInterval(() => {
       const elapsed = Date.now() - startTime;
       if (elapsed > duration * 1000) {
         clearInterval(pulse);
-        canvas.style.filter = '';
-        canvas.style.transform = '';
+        this.pulseBrightness = 1;
+        this.applyCanvasVisualState();
         return;
       }
       
       const intensity = Math.sin((elapsed / (duration * 1000)) * Math.PI);
-      canvas.style.filter = `brightness(${1 + intensity * 0.3})`;
+      this.pulseBrightness = 1 + intensity * 0.3;
+      this.applyCanvasVisualState();
     }, 16);
   }
   

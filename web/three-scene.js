@@ -20,6 +20,8 @@ class ThreeJSScene {
     this.operatorMesh = null;
     this.particleGeometry = null;
     this.particlePoints = null;
+    this.activeParticleCount = 0;
+    this.maxParticleCount = 0;
     
     this.lights = [];
     this.updateTime = 0;
@@ -125,7 +127,7 @@ class ThreeJSScene {
     spiralGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(spiralPoints), 3));
     const spiralMaterial = new THREE.LineBasicMaterial({
       color: 0x8B00FF,
-      linewidth: 3
+      linewidth: 3,
     });
     const spiralLine = new THREE.Line(spiralGeometry, spiralMaterial);
     spiralLine.castShadow = true;
@@ -151,7 +153,7 @@ class ThreeJSScene {
       ringGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(ringPoints), 3));
       const ringMaterial = new THREE.LineBasicMaterial({
         color: ring === 1 ? 0x00FFFF : 0xAA66FF,
-        linewidth: 2
+        linewidth: 2,
       });
       const ringLine = new THREE.Line(ringGeometry, ringMaterial);
       ringLine.castShadow = true;
@@ -315,11 +317,15 @@ class ThreeJSScene {
       vertexColors: true,
       transparent: true,
       sizeAttenuation: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
     });
     
     this.particlePoints = new THREE.Points(particleGeometry, particleMaterial);
     this.particleGeometry = particleGeometry;
     this.scene.add(this.particlePoints);
+    this.maxParticleCount = particleCount;
+    this.activeParticleCount = particleCount;
   }
   
   /**
@@ -365,6 +371,11 @@ class ThreeJSScene {
     
     // Animate particles
     if (this.particlePoints) {
+      const rawPressure = engineState && engineState.pressure ? engineState.pressure.level : 0;
+      const pressureLevel = rawPressure > 1 ? (rawPressure / 100) : rawPressure;
+      const targetParticleCount = Math.floor(800 + (Math.max(0, Math.min(1, pressureLevel)) * 1200));
+      this.activeParticleCount = Math.min(this.maxParticleCount, Math.max(200, targetParticleCount));
+      this.particlePoints.geometry.setDrawRange(0, this.activeParticleCount);
       this.particlePoints.rotation.x += 0.0001;
       this.particlePoints.rotation.y += 0.0002;
     }
@@ -398,13 +409,6 @@ class ThreeJSScene {
     };
   }
 
-  getParticleCount() {
-    if (!this.particleGeometry) {
-      return 0;
-    }
-    return this.particleGeometry.getAttribute('position').count;
-  }
-  
   /**
    * Apply pulse effect to vortex
    */
@@ -417,6 +421,13 @@ class ThreeJSScene {
         this.vortexMesh.scale.copy(originalScale);
       }, 200);
     }
+  }
+
+  /**
+   * Get active particle count
+   */
+  getParticleCount() {
+    return this.activeParticleCount;
   }
 }
 

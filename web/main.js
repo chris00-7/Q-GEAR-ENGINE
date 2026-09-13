@@ -101,7 +101,10 @@ class QGearRenderer {
     if (fpsElement) fpsElement.textContent = String(this.fps);
 
     const particleCountElement = document.getElementById('particle-count');
-    if (particleCountElement) particleCountElement.textContent = String(this.engineState.particles.length);
+    const particleCount = this.threeScene && typeof this.threeScene.getParticleCount === 'function'
+      ? this.threeScene.getParticleCount()
+      : this.engineState.particles.length;
+    if (particleCountElement) particleCountElement.textContent = String(particleCount);
 
     const pressureValueElement = document.getElementById('pressure-value');
     if (pressureValueElement) pressureValueElement.textContent = String(pressurePercent);

@@ -146,6 +146,7 @@ class AudioSystem {
    * Stop ambient sound
    */
   stopAmbientSound() {
+    this.ambientStartToken++;
     if (this.ambientOscillator && this.audioContext) {
       try {
         this.ambientOscillator.stop();

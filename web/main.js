@@ -9,8 +9,7 @@ class QGearRenderer {
   constructor() {
     this.viewport = document.getElementById('viewport');
     if (!this.viewport || typeof ThreeJSScene === 'undefined' || typeof THREE === 'undefined') {
-      console.error('Q-GEAR initialization failed: missing viewport or Three.js scene dependencies.');
-      return;
+      throw new Error('Q-GEAR initialization failed: missing viewport or Three.js scene dependencies.');
     }
     this.threeScene = new ThreeJSScene(this.viewport);
     
@@ -165,5 +164,9 @@ class QGearRenderer {
 
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
-  new QGearRenderer();
+  try {
+    new QGearRenderer();
+  } catch (error) {
+    console.error(error.message);
+  }
 });

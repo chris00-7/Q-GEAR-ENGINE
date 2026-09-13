@@ -73,7 +73,7 @@ class QGearRenderer {
   updateEngine(deltaTime) {
     // Simulate pressure accumulation
     this.engineState.pressure.current = Math.min(
-      this.engineState.pressure.current + (18 * deltaTime),
+      this.engineState.pressure.current + 0.3,
       this.engineState.pressure.max
     );
     this.engineState.pressure.level = this.engineState.pressure.current / this.engineState.pressure.max;

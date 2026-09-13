@@ -17,6 +17,7 @@ const { EffectsSystem } = require('./effects');
 
 class QGearEngine {
   constructor(config = {}) {
+    config = config || {};
     // Initialize all subsystems
     this.vortex = new VortexCore(config.vortex);
     this.pressure = new PressureSystem(config.pressure);

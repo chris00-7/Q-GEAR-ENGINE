@@ -8,6 +8,9 @@
 class ThreeJSScene {
   constructor(containerElement) {
     this.container = containerElement;
+    if (!this.container) {
+      throw new Error('ThreeJSScene requires a valid container element.');
+    }
     this.scene = new THREE.Scene();
     this.camera = null;
     this.renderer = null;
@@ -37,8 +40,9 @@ class ThreeJSScene {
       antialias: true,
       alpha: true,
     });
+    const { width, height } = this.getViewportSize();
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(width, height, false);
     this.renderer.setClearColor(0x0a0e27, 1);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -51,9 +55,10 @@ class ThreeJSScene {
    * Initialize camera
    */
   initCamera() {
+    const { width, height } = this.getViewportSize();
     this.camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      width / height,
       0.1,
       10000
     );
@@ -232,8 +237,10 @@ class ThreeJSScene {
   createOperator() {
     const group = new THREE.Group();
     
-    // Operator body (stylized humanoid, compatible with Three r128)
-    const bodyGeometry = new THREE.CylinderGeometry(18, 22, 60, 16);
+    // Operator body (stylized humanoid)
+    const bodyGeometry = typeof THREE.CapsuleGeometry === 'function'
+      ? new THREE.CapsuleGeometry(20, 60, 8, 16)
+      : new THREE.CylinderGeometry(20, 20, 100, 16);
     const bodyMaterial = new THREE.MeshPhongMaterial({
       color: 0x00FF00,
       emissive: 0x00AA00,
@@ -315,6 +322,7 @@ class ThreeJSScene {
     });
     
     this.particlePoints = new THREE.Points(particleGeometry, particleMaterial);
+    this.particleGeometry = particleGeometry;
     this.scene.add(this.particlePoints);
     this.maxParticleCount = particleCount;
     this.activeParticleCount = particleCount;
@@ -384,14 +392,23 @@ class ThreeJSScene {
    * Handle window resize
    */
   onWindowResize() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const { width, height } = this.getViewportSize();
     
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(width, height, false);
   }
-  
+
+  getViewportSize() {
+    const rect = this.container.getBoundingClientRect();
+    const width = rect.width > 0 ? rect.width : window.innerWidth;
+    const height = rect.height > 0 ? rect.height : window.innerHeight;
+    return {
+      width: Math.max(width, 1),
+      height: Math.max(height, 1),
+    };
+  }
+
   /**
    * Apply pulse effect to vortex
    */

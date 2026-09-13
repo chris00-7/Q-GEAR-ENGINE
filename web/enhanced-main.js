@@ -8,6 +8,9 @@
 class EnhancedQGearRenderer {
   constructor() {
     this.viewport = document.getElementById('viewport');
+    if (!this.viewport || typeof ThreeJSScene === 'undefined' || typeof THREE === 'undefined') {
+      throw new Error('Enhanced Q-GEAR initialization failed: missing viewport or Three.js scene dependencies.');
+    }
     this.threeScene = new ThreeJSScene(this.viewport);
     
     // Initialize audio system
@@ -195,10 +198,14 @@ class EnhancedQGearRenderer {
 
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
-  // Use enhanced renderer if audio/effects libraries are available
-  if (typeof EnhancedQGearRenderer !== 'undefined') {
-    new EnhancedQGearRenderer();
-  } else if (typeof QGearRenderer !== 'undefined') {
-    new QGearRenderer();
+  try {
+    // Use enhanced renderer if audio/effects libraries are available
+    if (typeof EnhancedQGearRenderer !== 'undefined') {
+      new EnhancedQGearRenderer();
+    } else if (typeof QGearRenderer !== 'undefined') {
+      new QGearRenderer();
+    }
+  } catch (error) {
+    console.error(error.message);
   }
 });

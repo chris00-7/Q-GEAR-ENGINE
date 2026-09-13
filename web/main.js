@@ -8,6 +8,9 @@
 class QGearRenderer {
   constructor() {
     this.viewport = document.getElementById('viewport');
+    if (!this.viewport || typeof ThreeJSScene === 'undefined' || typeof THREE === 'undefined') {
+      throw new Error('Q-GEAR initialization failed: missing viewport or Three.js scene dependencies.');
+    }
     this.threeScene = new ThreeJSScene(this.viewport);
     
     // Initialize mock engine state
@@ -30,6 +33,7 @@ class QGearRenderer {
       particles: [],
       effects: [],
     };
+    this.engineState.particles.length = this.threeScene.getParticleCount();
     
     // Performance tracking
     this.fps = 0;
@@ -45,23 +49,22 @@ class QGearRenderer {
    * Setup control buttons and interactions
    */
   setupControls() {
-    document.getElementById('btn-stance-1').addEventListener('click', () => {
+    document.getElementById('btn-stance-1')?.addEventListener('click', () => {
       console.log('Stance 1 activated');
-      this.engineState.pressure.level = Math.min(this.engineState.pressure.level + 0.25, 1);
+      this.setPressureLevel(this.engineState.pressure.level + 0.25);
     });
     
-    document.getElementById('btn-stance-2').addEventListener('click', () => {
+    document.getElementById('btn-stance-2')?.addEventListener('click', () => {
       console.log('Stance 2 activated');
-      this.engineState.pressure.level = Math.min(this.engineState.pressure.level + 0.5, 1);
+      this.setPressureLevel(this.engineState.pressure.level + 0.5);
     });
     
-    document.getElementById('btn-burst').addEventListener('click', () => {
+    document.getElementById('btn-burst')?.addEventListener('click', () => {
       console.log('Burst activated');
-      this.engineState.pressure.level = 0;
-      this.engineState.pressure.current = 0;
+      this.setPressureLevel(0);
     });
     
-    document.getElementById('btn-vortex-pulse').addEventListener('click', () => {
+    document.getElementById('btn-vortex-pulse')?.addEventListener('click', () => {
       console.log('Vortex pulse triggered');
       this.threeScene.pulseVortex();
     });
@@ -89,23 +92,32 @@ class QGearRenderer {
     
     // Update pressure gauge
     const pressureBar = document.getElementById('pressure-bar');
-    pressureBar.style.width = pressurePercent + '%';
-    
+    if (pressureBar) {
+      pressureBar.style.width = pressurePercent + '%';
+    }
+
     // Update stats
-    document.getElementById('fps').textContent = this.fps;
+    const fpsElement = document.getElementById('fps');
+    if (fpsElement) fpsElement.textContent = String(this.fps);
+
+    const particleCountElement = document.getElementById('particle-count');
     const particleCount = this.threeScene && typeof this.threeScene.getParticleCount === 'function'
       ? this.threeScene.getParticleCount()
       : this.engineState.particles.length;
-    document.getElementById('particle-count').textContent = particleCount;
-    document.getElementById('pressure-value').textContent = pressurePercent;
+    if (particleCountElement) particleCountElement.textContent = String(particleCount);
+
+    const pressureValueElement = document.getElementById('pressure-value');
+    if (pressureValueElement) pressureValueElement.textContent = String(pressurePercent);
     
     // Color coding for danger levels
-    if (this.engineState.pressure.isCritical) {
-      pressureBar.style.background = 'linear-gradient(90deg, #FF0000, #FF3300)';
-    } else if (this.engineState.pressure.isDangerous) {
-      pressureBar.style.background = 'linear-gradient(90deg, #FF6600, #FF3300)';
-    } else {
-      pressureBar.style.background = 'linear-gradient(90deg, #8B00FF, #00FFFF)';
+    if (pressureBar) {
+      if (this.engineState.pressure.isCritical) {
+        pressureBar.style.background = 'linear-gradient(90deg, #FF0000, #FF3300)';
+      } else if (this.engineState.pressure.isDangerous) {
+        pressureBar.style.background = 'linear-gradient(90deg, #FF6600, #FF3300)';
+      } else {
+        pressureBar.style.background = 'linear-gradient(90deg, #8B00FF, #00FFFF)';
+      }
     }
   }
   
@@ -113,6 +125,7 @@ class QGearRenderer {
    * Main update loop
    */
   update(deltaTime) {
+    this.engineState.particles.length = this.threeScene.getParticleCount();
     this.updateEngine(deltaTime);
     this.threeScene.update(this.engineState);
   }
@@ -151,9 +164,19 @@ class QGearRenderer {
     };
     animate();
   }
+
+  setPressureLevel(level) {
+    const clampedLevel = Math.min(Math.max(level, 0), 1);
+    this.engineState.pressure.level = clampedLevel;
+    this.engineState.pressure.current = clampedLevel * this.engineState.pressure.max;
+  }
 }
 
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
-  new QGearRenderer();
+  try {
+    new QGearRenderer();
+  } catch (error) {
+    console.error(error.message);
+  }
 });

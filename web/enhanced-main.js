@@ -8,6 +8,10 @@
 class EnhancedQGearRenderer {
   constructor() {
     this.viewport = document.getElementById('viewport');
+    if (!this.viewport || typeof ThreeJSScene === 'undefined' || typeof THREE === 'undefined') {
+      console.error('Enhanced Q-GEAR initialization failed: missing viewport or Three.js scene dependencies.');
+      return;
+    }
     this.threeScene = new ThreeJSScene(this.viewport);
     
     // Initialize audio system

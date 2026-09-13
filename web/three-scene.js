@@ -35,10 +35,12 @@ class ThreeJSScene {
       antialias: true,
       alpha: true,
     });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    const width = this.container?.clientWidth || window.innerWidth;
+    const height = this.container?.clientHeight || window.innerHeight;
+    this.renderer.setSize(width, height);
     this.renderer.setClearColor(0x0a0e27, 1);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFShadowShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.container.appendChild(this.renderer.domElement);
     
     window.addEventListener('resize', () => this.onWindowResize());
@@ -119,8 +121,7 @@ class ThreeJSScene {
     spiralGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(spiralPoints), 3));
     const spiralMaterial = new THREE.LineBasicMaterial({
       color: 0x8B00FF,
-      linewidth: 3,
-      emissive: 0x8B00FF,
+      linewidth: 3
     });
     const spiralLine = new THREE.Line(spiralGeometry, spiralMaterial);
     spiralLine.castShadow = true;
@@ -146,8 +147,7 @@ class ThreeJSScene {
       ringGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(ringPoints), 3));
       const ringMaterial = new THREE.LineBasicMaterial({
         color: ring === 1 ? 0x00FFFF : 0xAA66FF,
-        linewidth: 2,
-        emissive: ring === 1 ? 0x00FFFF : 0xAA66FF,
+        linewidth: 2
       });
       const ringLine = new THREE.Line(ringGeometry, ringMaterial);
       ringLine.castShadow = true;
@@ -232,7 +232,9 @@ class ThreeJSScene {
     const group = new THREE.Group();
     
     // Operator body (stylized humanoid)
-    const bodyGeometry = new THREE.CapsuleGeometry(20, 60, 8, 16);
+    const bodyGeometry = typeof THREE.CapsuleGeometry === 'function'
+      ? new THREE.CapsuleGeometry(20, 60, 8, 16)
+      : new THREE.CylinderGeometry(20, 20, 100, 16);
     const bodyMaterial = new THREE.MeshPhongMaterial({
       color: 0x00FF00,
       emissive: 0x00AA00,
@@ -374,8 +376,8 @@ class ThreeJSScene {
    * Handle window resize
    */
   onWindowResize() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = this.container?.clientWidth || window.innerWidth;
+    const height = this.container?.clientHeight || window.innerHeight;
     
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();

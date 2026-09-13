@@ -8,6 +8,10 @@
 class QGearRenderer {
   constructor() {
     this.viewport = document.getElementById('viewport');
+    if (!this.viewport || typeof ThreeJSScene === 'undefined' || typeof THREE === 'undefined') {
+      console.error('Q-GEAR initialization failed: missing viewport or Three.js scene dependencies.');
+      return;
+    }
     this.threeScene = new ThreeJSScene(this.viewport);
     
     // Initialize mock engine state
@@ -45,23 +49,23 @@ class QGearRenderer {
    * Setup control buttons and interactions
    */
   setupControls() {
-    document.getElementById('btn-stance-1').addEventListener('click', () => {
+    document.getElementById('btn-stance-1')?.addEventListener('click', () => {
       console.log('Stance 1 activated');
       this.engineState.pressure.level = Math.min(this.engineState.pressure.level + 0.25, 1);
     });
     
-    document.getElementById('btn-stance-2').addEventListener('click', () => {
+    document.getElementById('btn-stance-2')?.addEventListener('click', () => {
       console.log('Stance 2 activated');
       this.engineState.pressure.level = Math.min(this.engineState.pressure.level + 0.5, 1);
     });
     
-    document.getElementById('btn-burst').addEventListener('click', () => {
+    document.getElementById('btn-burst')?.addEventListener('click', () => {
       console.log('Burst activated');
       this.engineState.pressure.level = 0;
       this.engineState.pressure.current = 0;
     });
     
-    document.getElementById('btn-vortex-pulse').addEventListener('click', () => {
+    document.getElementById('btn-vortex-pulse')?.addEventListener('click', () => {
       console.log('Vortex pulse triggered');
       this.threeScene.pulseVortex();
     });
@@ -89,6 +93,7 @@ class QGearRenderer {
     
     // Update pressure gauge
     const pressureBar = document.getElementById('pressure-bar');
+    if (!pressureBar) return;
     pressureBar.style.width = pressurePercent + '%';
     
     // Update stats

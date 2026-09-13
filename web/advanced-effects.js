@@ -29,15 +29,17 @@ class AdvancedEffects {
    */
   applyGlitchEffect(pressureLevel) {
     this.glitchIntensity = pressureLevel > 0.85 ? 1.0 : 0;
-    
+    const canvas = this.renderer?.domElement;
+    if (!canvas) return;
+
     if (this.glitchIntensity > 0) {
-      const canvas = this.renderer.domElement;
-      const ctx = canvas.getContext('2d');
-      
-      // Randomly offset screen scanlines
-      const offset = Math.random() * (this.glitchIntensity * 10);
-      const imageData = ctx.getImageData(0, offset, canvas.width, 5);
-      ctx.putImageData(imageData, Math.random() * 5, offset);
+      const xOffset = (Math.random() - 0.5) * (this.glitchIntensity * 6);
+      const yOffset = (Math.random() - 0.5) * (this.glitchIntensity * 3);
+      canvas.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+      canvas.style.filter = `contrast(${1 + this.glitchIntensity * 0.15}) saturate(${1 + this.glitchIntensity * 0.1})`;
+    } else {
+      canvas.style.transform = '';
+      canvas.style.filter = '';
     }
   }
   
@@ -60,6 +62,7 @@ class AdvancedEffects {
       const elapsed = Date.now() - startTime;
       if (elapsed > duration * 1000) {
         clearInterval(pulse);
+        canvas.style.filter = '';
         return;
       }
       

@@ -37,6 +37,10 @@ class AudioSystem {
     
     try {
       const ctx = this.audioContext;
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+      this.stopAmbientSound();
       
       // Create oscillator for ambient tone
       this.ambientOscillator = ctx.createOscillator();

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node -e \"const QGear = require('./engine/system'); const engine = new QGear(); engine.start(); setInterval(() => engine.update(), 16);\"",
     "dev": "http-server -p 8080 -c-1",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test"
   },
   "keywords": [
     "quantum",

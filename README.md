@@ -55,6 +55,13 @@ The browser app is static and does not require a build step. Run its JavaScript 
 npm test
 ```
 
+## Deployment
+
+The static web visualization is deployed to GitHub Pages via GitHub Actions:
+
+- **Workflow:** `.github/workflows/deploy.yml` runs test verification, then deploys the `web/` directory to GitHub Pages on pushes to `main` (or via manual `workflow_dispatch`).
+- **Setup:** In repository settings under **Settings > Pages**, set **Build and deployment > Source** to **GitHub Actions**.
+
 ## Troubleshooting
 
 - **Port 8080 is already in use:** stop the other process using that port, then rerun `npm run dev`.
